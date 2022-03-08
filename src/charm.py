@@ -22,7 +22,7 @@ from ops.model import ActiveStatus
 logger = logging.getLogger(__name__)
 
 
-class ServiceDiscoveryOperatorCharm(CharmBase):
+class ServiceDiscoveryCharm(CharmBase):
     """Charm the service."""
 
     _stored = StoredState()
@@ -101,4 +101,4 @@ class ServiceDiscoveryOperatorCharm(CharmBase):
 
 
 if __name__ == "__main__":
-    main(ServiceDiscoveryOperatorCharm)
+    main(ServiceDiscoveryCharm)

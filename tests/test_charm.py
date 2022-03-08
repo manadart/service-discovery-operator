@@ -6,14 +6,14 @@
 import unittest
 from unittest.mock import Mock
 
-from charm import ServiceDiscoveryOperatorCharm
+from charm import ServiceDiscoveryCharm
 from ops.model import ActiveStatus
 from ops.testing import Harness
 
 
 class TestCharm(unittest.TestCase):
     def setUp(self):
-        self.harness = Harness(ServiceDiscoveryOperatorCharm)
+        self.harness = Harness(ServiceDiscoveryCharm)
         self.addCleanup(self.harness.cleanup)
         self.harness.begin()
 
