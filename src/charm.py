@@ -13,12 +13,14 @@ develop a new k8s charm using the Operator Framework:
 """
 
 import logging
+import time
 
 from ops.charm import CharmBase
 from ops.framework import StoredState
 from ops.main import main
 from ops.model import ActiveStatus
 from charms.service_discovery_operator.v0.event import DiscoveryEventCharmEvents
+from charms.service_discovery_operator.v0.service_discovery import ServiceDiscovery
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +33,15 @@ class ServiceDiscoveryCharm(CharmBase):
 
     def __init__(self, *args):
         super().__init__(*args)
+        self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.discovery, self._on_discovery)
 
+    def _on_start(self, event):
+        self._service_discovery = ServiceDiscovery(self)
+        self.unit.status = ActiveStatus()
+
     def _on_discovery(self, event):
-        self.unit.status = ActiveStatus("I got a custom event")
+        self.unit.status = ActiveStatus(str(time.time()))
 
 
 if __name__ == "__main__":
