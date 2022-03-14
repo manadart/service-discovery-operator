@@ -8,14 +8,6 @@ description: |
   A proof of concept for emitting custom events 
   from a process external to the charm.  
 summary: Service discovery with custom events
-
-
-containers:
-  httpbin:
-    resource: httpbin-image
-
-
-resources:
-  httpbin-image:
-    type: oci-image
-    description: OCI image for httpbin (kennethreitz/httpbin)
+assumes:
+  - juju >= 2.9.23
+  - k8s-api
