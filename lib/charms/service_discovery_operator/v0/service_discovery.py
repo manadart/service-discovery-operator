@@ -1,5 +1,6 @@
 import logging
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -12,6 +13,23 @@ logger = logging.getLogger(__name__)
 class ServiceDiscovery(Object):
 
     def __init__(self, charm):
+        self._charm = charm
+        self._stop_existing_discovery()
+        self._start_discovery()
+
+    def _stop_existing_discovery(self):
+        pid = self._charm.discovery_pid
+        if not pid:
+            return
+
+        try:
+            os.kill(pid, signal.SIGINT)
+        except OSError:
+            pass
+
+        logging.info('Stopped running discovery process with PID {}'.format(pid))
+
+    def _start_discovery(self):
         logging.info('Starting discovery process')
 
         # We need to trick Juju into thinking that we are not running in a hook
@@ -24,8 +42,8 @@ class ServiceDiscovery(Object):
                 '/usr/bin/python3',
                 'lib/charms/service_discovery_operator/v0/service_discovery.py',
                 '/var/lib/juju/tools/unit-service-discovery-0/juju-run',
-                charm.unit.name,
-                charm.charm_dir
+                self._charm.unit.name,
+                self._charm.charm_dir
             ],
             stdout=open('discovery.log', 'a'),
             stderr=subprocess.STDOUT,
@@ -33,6 +51,7 @@ class ServiceDiscovery(Object):
         ).pid
 
         logging.info('Discovery process started with PID {}'.format(pid))
+        self._charm.discovery_pid = pid
 
 
 def main():

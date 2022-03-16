@@ -33,6 +33,9 @@ class ServiceDiscoveryCharm(CharmBase):
 
     def __init__(self, *args):
         super().__init__(*args)
+
+        self._stored.set_default(discovery_pid=None)
+
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.discovery, self._on_discovery)
 
@@ -42,6 +45,14 @@ class ServiceDiscoveryCharm(CharmBase):
 
     def _on_discovery(self, event):
         self.unit.status = ActiveStatus(str(time.time()))
+
+    @property
+    def discovery_pid(self):
+        return self._stored.discovery_pid
+
+    @discovery_pid.setter
+    def discovery_pid(self, pid):
+        self._stored.discovery_pid = pid
 
 
 if __name__ == "__main__":
