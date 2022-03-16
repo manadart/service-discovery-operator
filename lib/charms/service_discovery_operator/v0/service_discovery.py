@@ -41,7 +41,7 @@ class ServiceDiscovery(Object):
             [
                 '/usr/bin/python3',
                 'lib/charms/service_discovery_operator/v0/service_discovery.py',
-                '/var/lib/juju/tools/unit-service-discovery-0/juju-run',
+                '/var/lib/juju/tools/{}/juju-run'.format(self._charm.unit_tag),
                 self._charm.unit.name,
                 self._charm.charm_dir
             ],

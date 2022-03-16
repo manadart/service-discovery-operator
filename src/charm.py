@@ -47,6 +47,11 @@ class ServiceDiscoveryCharm(CharmBase):
         self.unit.status = ActiveStatus(str(time.time()))
 
     @property
+    def unit_tag(self):
+        unit_num = self.unit.name.split("/")[-1]
+        return "unit-{}-{}".format(self.app.name, unit_num)
+
+    @property
     def discovery_pid(self):
         return self._stored.discovery_pid
 
