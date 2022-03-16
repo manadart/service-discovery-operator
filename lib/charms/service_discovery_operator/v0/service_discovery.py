@@ -14,6 +14,7 @@ class ServiceDiscovery(Object):
 
     def __init__(self, charm):
         self._charm = charm
+        self._payload_file_name = '/tmp/service-discovery-payload.json'
         self._stop_existing_discovery()
         self._start_discovery()
 
@@ -32,6 +33,8 @@ class ServiceDiscovery(Object):
     def _start_discovery(self):
         logging.info('Starting discovery process')
 
+        self._charm.payload_file_name = self._payload_file_name
+
         # We need to trick Juju into thinking that we are not running in a hook
         # context, as Juju will disallow use of juju-run.
         new_env = os.environ.copy()
@@ -43,15 +46,26 @@ class ServiceDiscovery(Object):
                 'lib/charms/service_discovery_operator/v0/service_discovery.py',
                 '/var/lib/juju/tools/{}/juju-run'.format(self._charm.unit_tag),
                 self._charm.unit.name,
-                self._charm.charm_dir
+                self._charm.charm_dir,
+                self._payload_file_name
             ],
             stdout=open('discovery.log', 'a'),
             stderr=subprocess.STDOUT,
             env=new_env
         ).pid
 
-        logging.info('Discovery process started with PID {}'.format(pid))
         self._charm.discovery_pid = pid
+        logging.info('Discovery process started with PID {}'.format(pid))
+
+
+def write_payload(file_name):
+    with open(file_name, 'w') as f:
+        f.write(str(time.time()))
+
+
+def dispatch(tools_path, unit, charm_dir):
+    dispatch_sub_cmd = 'JUJU_DISPATCH_PATH={}/hooks/discovery {}/dispatch'.format(charm_dir, charm_dir)
+    subprocess.run([tools_path, '-u', unit, dispatch_sub_cmd])
 
 
 def main():
@@ -60,16 +74,11 @@ def main():
     tools_path = args[0]
     unit = args[1]
     charm_dir = args[2]
+    payload_file_name = args[3]
 
     while True:
-        subprocess.run(
-            [
-                tools_path,
-                '-u',
-                unit,
-                'JUJU_DISPATCH_PATH={}/hooks/discovery {}/dispatch'.format(charm_dir, charm_dir)
-            ]
-        )
+        write_payload(payload_file_name)
+        dispatch(tools_path, unit, charm_dir)
         time.sleep(5)
 
 

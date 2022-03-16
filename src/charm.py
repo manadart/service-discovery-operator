@@ -35,6 +35,7 @@ class ServiceDiscoveryCharm(CharmBase):
         super().__init__(*args)
 
         self._stored.set_default(discovery_pid=None)
+        self._stored.set_default(discovery_payload=None)
 
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.discovery, self._on_discovery)
@@ -58,6 +59,14 @@ class ServiceDiscoveryCharm(CharmBase):
     @discovery_pid.setter
     def discovery_pid(self, pid):
         self._stored.discovery_pid = pid
+
+    @property
+    def payload_file_name(self):
+        return self._stored.payload_file_name
+
+    @payload_file_name.setter
+    def payload_file_name(self, file_name):
+        self._stored.payload_file_name = file_name
 
 
 if __name__ == "__main__":
