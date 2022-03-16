@@ -45,7 +45,11 @@ class ServiceDiscoveryCharm(CharmBase):
         self.unit.status = ActiveStatus()
 
     def _on_discovery(self, event):
-        self.unit.status = ActiveStatus(str(time.time()))
+        self.unit.status = ActiveStatus(self._read_discovery_payload())
+
+    def _read_discovery_payload(self):
+        with open(self.payload_file_name, 'r') as f:
+            return f.read()
 
     @property
     def unit_tag(self):
