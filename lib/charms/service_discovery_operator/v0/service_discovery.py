@@ -7,6 +7,9 @@ import time
 
 from ops.framework import Object
 
+from lightkube import Client
+from lightkube.resources.core_v1 import Pod
+
 logger = logging.getLogger(__name__)
 
 
@@ -57,9 +60,9 @@ class ServiceDiscovery(Object):
             pass
 
 
-def write_payload(file_name):
+def write_payload(file_name, payload):
     with open(file_name, 'w') as f:
-        f.write(str(time.time()))
+        f.write(payload)
 
 
 def dispatch(tools_path, unit, charm_dir):
@@ -75,10 +78,12 @@ def main():
     charm_dir = args[2]
     payload_file_name = args[3]
 
-    while True:
-        write_payload(payload_file_name)
+    client = Client()
+    labels = {"app.kubernetes.io/name": "grafana-k8s"}
+
+    for op, dep in client.watch(Pod, namespace="*", labels=labels):
+        write_payload(payload_file_name, f"{op} {dep.metadata.namespace} {dep.metadata.name}")
         dispatch(tools_path, unit, charm_dir)
-        time.sleep(5)
 
 
 if __name__ == "__main__":
