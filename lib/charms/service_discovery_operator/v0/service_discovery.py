@@ -15,22 +15,10 @@ class ServiceDiscovery(Object):
     def __init__(self, charm):
         self._charm = charm
         self._payload_file_name = '/tmp/service-discovery-payload.json'
-        self._stop_existing_discovery()
-        self._start_discovery()
 
-    def _stop_existing_discovery(self):
-        pid = self._charm.discovery_pid
-        if not pid:
-            return
+    def start_discovery(self):
+        self.stop_discovery()
 
-        try:
-            os.kill(pid, signal.SIGINT)
-        except OSError:
-            pass
-
-        logging.info('Stopped running discovery process with PID {}'.format(pid))
-
-    def _start_discovery(self):
         logging.info('Starting discovery process')
 
         self._charm.payload_file_name = self._payload_file_name
@@ -56,6 +44,17 @@ class ServiceDiscovery(Object):
 
         self._charm.discovery_pid = pid
         logging.info('Discovery process started with PID {}'.format(pid))
+
+    def stop_discovery(self):
+        pid = self._charm.discovery_pid
+        if not pid:
+            return
+
+        try:
+            os.kill(pid, signal.SIGINT)
+            logging.info('Stopped running discovery process with PID {}'.format(pid))
+        except OSError:
+            pass
 
 
 def write_payload(file_name):

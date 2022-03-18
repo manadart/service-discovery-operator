@@ -37,12 +37,20 @@ class ServiceDiscoveryCharm(CharmBase):
         self._stored.set_default(discovery_pid=None)
         self._stored.set_default(discovery_payload=None)
 
+        self._service_discovery = ServiceDiscovery(self)
+
         self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(self.on.discovery, self._on_discovery)
+        self.framework.observe(self.on.leader_elected, self._on_leader_elected)
 
     def _on_start(self, event):
-        self._service_discovery = ServiceDiscovery(self)
         self.unit.status = ActiveStatus()
+
+    def _on_leader_elected(self, event):
+        if self.unit.is_leader():
+            self._service_discovery.start_discovery()
+        else:
+            self._service_discovery.stop_discovery()
 
     def _on_discovery(self, event):
         self.unit.status = ActiveStatus(self._read_discovery_payload())
