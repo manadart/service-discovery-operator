@@ -37,7 +37,7 @@ class ServiceDiscovery(Object):
                 self._charm.charm_dir,
                 self._payload_file_name
             ],
-            stdout=open('discovery.log', 'a'),
+            stdout=open('/var/log/discovery.log', 'a'),
             stderr=subprocess.STDOUT,
             env=new_env
         ).pid
