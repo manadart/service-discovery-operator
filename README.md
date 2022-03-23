@@ -5,7 +5,7 @@
 A proof-of-concept for on operator that can spawn a process to watch its local
 k8s cluster for events.
 
-These events are dispatched back to the spawn charm via a custom event.
+These events are dispatched back to the spawning charm via a custom event.
 
 ## Usage
 
