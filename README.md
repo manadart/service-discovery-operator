@@ -2,23 +2,13 @@
 
 ## Description
 
-TODO: Describe your charm in a few paragraphs of Markdown
+A proof-of-concept for on operator that can spawn a process to watch its local
+k8s cluster for events.
+
+These events are dispatched back to the spawn charm via a custom event.
 
 ## Usage
 
-TODO: Provide high-level usage, such as required config or relations
+- `charmcraft pack` this charm and deploy it.
+- Deploy grafana-k8s and observe the status change indicating discovery.
 
-
-## Relations
-
-TODO: Provide any relations which are provided or required by your charm
-
-## OCI Images
-
-TODO: Include a link to the default image your charm uses
-
-## Contributing
-
-Please see the [Juju SDK docs](https://juju.is/docs/sdk) for guidelines
-on enhancements to this charm following best practice guidelines, and
-`CONTRIBUTING.md` for developer guidance.

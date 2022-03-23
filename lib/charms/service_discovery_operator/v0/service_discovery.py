@@ -3,7 +3,6 @@ import os
 import signal
 import subprocess
 import sys
-import time
 
 from ops.framework import Object
 

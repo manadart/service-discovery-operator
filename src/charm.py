@@ -4,16 +4,7 @@
 #
 # Learn more at: https://juju.is/docs/sdk
 
-"""Charm the service.
-
-Refer to the following post for a quick-start guide that will help you
-develop a new k8s charm using the Operator Framework:
-
-    https://discourse.charmhub.io/t/4208
-"""
-
 import logging
-import time
 
 from ops.charm import CharmBase
 from ops.framework import StoredState
@@ -26,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class ServiceDiscoveryCharm(CharmBase):
-    """Charm the service."""
 
     on = DiscoveryEventCharmEvents()
     _stored = StoredState()
